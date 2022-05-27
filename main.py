@@ -6,8 +6,12 @@
 """
 import pandas as pd
 import os
-from utils.classification.naivebayes_classification import train_or_load_classifier,predict #贝叶斯分类
+# from utils.classification.naivebayes_classification import train_or_load_classifier,predict #贝叶斯分类
 # from svm_classification import train_or_load_classifier,predict #svm分类
+from utils.classification.kmeans_classification import kmeans_classification
+# from pyhanlp import *
+#
+# ClusterAnalyzer = JClass('com.hankcs.hanlp.mining.cluster.ClusterAnalyzer')
 #导入数据
 def import_data(path):
     datas = pd.read_csv(path,encoding = 'utf-8',header=None,sep='\t',error_bad_lines=False)
@@ -49,9 +53,36 @@ def new_file(new_file_name,new_file_content,classifier):
 
 
 if __name__ == '__main__':
-    new_folder()
-    files_name,files_content = import_data("data.txt")
-    classifier =  train_or_load_classifier()
+    # new_folder()
+    # files_name,files_content = import_data("data.txt")
+    analyzer = kmeans_classification()
+    path = "F:\\Code\\Python\\pyhanlp\\pyhanlp\\pyhanlp\\static\\data\\test\\搜狗文本分类语料库迷你版"
+    dir =  os.listdir(path)
+    file_name=''
+    for i in dir:
+        paths = path+"\\"+i
+        dirs =  os.listdir(paths)[0:5]
+        for j in dirs:
+            file_path =paths+"\\"+j
+            file_name=i+"-"+j
+            print(file_path)
+            datas = pd.read_csv(file_path,error_bad_lines=False,sep="\t",header=None)
+            print(datas.values)
+            # analyzer.addDocument(file_name, datas.values[0])
+    # print(analyzer.kmeans(5))
+    # analyzer.repeatedBisection(3)
+    # for i in range(10):
+    #     datas = pd.read_csv(path, encoding='utf-8', header=None, sep='\t', error_bad_lines=False)
+    #
+    #     analyzer.addDocument(i, files_content[i])
+    #     print(analyzer.addDocument(i,files_content[i]))
+    # print(analyzer.kmeans(10))
+    # analyzer.repeatedBisection(3)
+    # analyzer.repeatedBisection(1.0) # 自动判断聚类数量k
+
+
+
+    # classifier =  train_or_load_classifier()
     # count = len(files_name)-1
-    new_file(files_name,files_content,classifier)
+    # new_file(files_name,files_content,classifier)
 
