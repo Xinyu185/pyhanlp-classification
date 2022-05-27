@@ -6,12 +6,11 @@
 """
 import pandas as pd
 import os
-# from utils.classification.naivebayes_classification import train_or_load_classifier,predict #贝叶斯分类
-# from svm_classification import train_or_load_classifier,predict #svm分类
-from utils.classification.kmeans_classification import kmeans_classification
-# from pyhanlp import *
-#
-# ClusterAnalyzer = JClass('com.hankcs.hanlp.mining.cluster.ClusterAnalyzer')
+# from utils.classification.naivebayes_classification import train_or_load_classifier,predict#贝叶斯分类
+# from utils.classification.svm_classification import train_or_load_classifier,predict #svm分类
+from utils.classification.kmeans_classification import train_or_load_classifier,predict
+from utils.utils.doload import ensure_data
+
 #导入数据
 def import_data(path):
     datas = pd.read_csv(path,encoding = 'utf-8',header=None,sep='\t',error_bad_lines=False)
@@ -24,65 +23,11 @@ def new_folder():
     news_path = os.path.join(project_path, 'data')  # 新闻数据存放目录路径
     if not os.path.exists(news_path):  # 创建data文件夹
         os.mkdir(news_path)
-
-#创建文件
-# def new_file(new_file_name,new_file_content,count):
-    # if count<0:
-    #     return "完成"
-    # else:
-    #     print(new_file_name[count])
-    #     print(new_file_content[count])
-    #     print(count)
-    #     count=count-1
-    #     new_file(new_file_name,new_file_content,count)
-    #RecursionError: maximum recursion depth exceeded while calling a Python object 递归次数不能超过1000次
-def new_file(new_file_name,new_file_content,classifier):
-    for i in range(len(new_file_name)):
-        classes = predict(classifier, new_file_content[i])
-# 判断是否存在该文件夹，不存在则创建
-        if not os.path.exists("data\\{}\\".format(classes)):  # 创建文件夹
-            os.mkdir("data\\{}\\".format(classes))
-        # w的意思:打开一个文件只用于写入。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件
-        try:
-            with open(r"data\{}\{}.txt".format(classes,i), "w") as op:
-                op.write(new_file_content[i])
-                op.close()
-        except:
-            #编码错误的 跳过 并打印出来
-            print(new_file_content[i])
-
-
 if __name__ == '__main__':
-    # new_folder()
-    # files_name,files_content = import_data("data.txt")
-    analyzer = kmeans_classification()
-    path = "F:\\Code\\Python\\pyhanlp\\pyhanlp\\pyhanlp\\static\\data\\test\\搜狗文本分类语料库迷你版"
-    dir =  os.listdir(path)
-    file_name=''
-    for i in dir:
-        paths = path+"\\"+i
-        dirs =  os.listdir(paths)[0:5]
-        for j in dirs:
-            file_path =paths+"\\"+j
-            file_name=i+"-"+j
-            print(file_path)
-            datas = pd.read_csv(file_path,error_bad_lines=False,sep="\t",header=None)
-            print(datas.values)
-            # analyzer.addDocument(file_name, datas.values[0])
-    # print(analyzer.kmeans(5))
-    # analyzer.repeatedBisection(3)
-    # for i in range(10):
-    #     datas = pd.read_csv(path, encoding='utf-8', header=None, sep='\t', error_bad_lines=False)
-    #
-    #     analyzer.addDocument(i, files_content[i])
-    #     print(analyzer.addDocument(i,files_content[i]))
-    # print(analyzer.kmeans(10))
-    # analyzer.repeatedBisection(3)
-    # analyzer.repeatedBisection(1.0) # 自动判断聚类数量k
-
-
-
-    # classifier =  train_or_load_classifier()
-    # count = len(files_name)-1
-    # new_file(files_name,files_content,classifier)
+    sogou_corpus_path = ensure_data('搜狗文本分类语料库迷你版','http://file.hankcs.com/corpus/sogou-text-classification-corpus-mini.zip')
+    new_folder()
+    files_name,files_content = import_data("./test_data/allinone/data.txt")
+    classifier =  train_or_load_classifier()
+    class_array = predict(classifier,10,"test_data/文本分类语料库")
+    print(class_array)
 
